@@ -1,0 +1,1 @@
+g++ Main.cpp Shader.cpp CompShader.cpp glad.c -L C:\Users\Seth\Desktop\OpenGL\lib -lglfw3 -lopengl32 -lgdi32 -I C:\Users\Seth\Desktop\OpenGL\include
