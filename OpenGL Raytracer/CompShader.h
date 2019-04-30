@@ -27,8 +27,9 @@ public:
 
 	void setDouble(const std::string &name, double value) const;
 
-private:
 	unsigned int ID; // Shader program ID for referencing object stored on video card
+
+private:
 
 	unsigned int compShader; // Compute shader ID
 

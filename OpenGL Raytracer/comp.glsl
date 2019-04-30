@@ -18,6 +18,14 @@ uniform vec3 camUp;
 uniform vec3 camLight;
 uniform int numShapeVerts;
 
+layout(rgba32f, binding = 2) uniform image2D tex;
+//uniform sampler2D tex;
+
+//maximum ray bounces
+const int maxBounce = 1;
+//how much the each reflection affects color of original hit
+const float reflectIndex = 0.5;
+
 vec3 lightSource1 = vec3(1,1,1);
 
 // Shape
@@ -62,6 +70,7 @@ void main() {
 
 vec3 castRay(vec3 orig, vec3 dir)
 {
+	
 	bool inter;
 	int i, i_closest;
 	bool backFacing;
@@ -87,10 +96,11 @@ vec3 castRay(vec3 orig, vec3 dir)
 	// index of first of 3 vertices of intersection with shape is i
 	if (inter)
 	{
-		if (!backFacing) return vec3(1,1,1)/max((t*t),1);
+		if (!backFacing) return vec3(1, 1, 1)/max(t*t, 1);//imageLoad(tex, ivec2(u, v)).rgb;//texture(tex, vec2(u, v)).xyz;//vec3(1, 1, 1)/max(t*t, 1); //
 		else return vec3(0,0,0);
 	}
 	else return bgColor;
+
 
 	//return vec3(data.shape[i_closest].x, 1.0f, data.shape[i_closest].z);
 }
