@@ -1,0 +1,6 @@
+cube_tex.obj
+1024x1024
+12 tris
+1048576 rays
+20 ms
+GPU

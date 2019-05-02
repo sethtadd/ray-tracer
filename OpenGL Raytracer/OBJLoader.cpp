@@ -1,9 +1,13 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "OBJLoader.h"
 #include <fstream>
 #include <string>
+#include <cstring>
 #include <tuple>
 #include <sstream>
 #include <iostream>
+#include <stdio.h>
 
 
 OBJLoader::OBJLoader() {}
@@ -23,33 +27,33 @@ std::tuple<std::vector<glm::vec3>, std::vector<glm::vec2>, std::vector<glm::vec3
 	std::vector<glm::vec3> normalIndices;
 
 	FILE * file;
-	errno_t err;
+	int err;
 
-	if((err = fopen_s(&file, filename.c_str(), "r")) != 0) {
+	if( ( file = fopen(filename.c_str(), "r") ) == nullptr ) {
 		std::cout << "Error, NULL file." << std::endl;
 	} else {
 		int ln = 0;
 		while(1) {
 			char linehead[128];
-			int r = fscanf_s(file, "%s", linehead, 128);
+			int r = fscanf(file, "%s", linehead, 128);
 			if (r == EOF) break;
 
 			if(strcmp(linehead, "v") == 0) { //vertex data
 				glm::vec3 vertex;
-				fscanf_s(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z, 128);
+				fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z, 128);
 				vertices.push_back(vertex);
 			} else if (strcmp(linehead, "vt") == 0) { //UV data
 				glm::vec2 uv;
-				fscanf_s(file, "%f %f\n", &uv.x, &uv.y, 128);
+				fscanf(file, "%f %f\n", &uv.x, &uv.y, 128);
 				uvs.push_back(uv);
 			} else if(strcmp(linehead, "vn") == 0) { //normal data
 				glm::vec3 normal;
-				fscanf_s(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z, 128);
+				fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z, 128);
 				normals.push_back(normal);
 			} else if(strcmp(linehead, "f") == 0) { //index data
 													//get all index values (could be more than 3 vertices per face)
-				char dat[128];
-				fgets(dat, 128, file);
+				char dat[1024];
+				fgets(dat, 1024, file);
 				std::string data(dat);
 				std::vector<std::string> tokens;
 				std::istringstream ss(data.substr(1));
@@ -61,8 +65,8 @@ std::tuple<std::vector<glm::vec3>, std::vector<glm::vec2>, std::vector<glm::vec3
 
 				//hello memory leaks
 				int *vind = (int *)malloc(sizeof * vind * tokens.size());
-				int *uvind = (int *)malloc(sizeof * vind * tokens.size());
-				int *nind = (int *)malloc(sizeof * vind * tokens.size());
+				int *uvind = (int *)malloc(sizeof * uvind * tokens.size());
+				int *nind = (int *)malloc(sizeof * nind * tokens.size());
 
 				std::vector<glm::vec3> faceVertices(tokens.size() - 2);
 				std::vector<glm::vec3> faceUVs(tokens.size() - 2);
@@ -71,7 +75,7 @@ std::tuple<std::vector<glm::vec3>, std::vector<glm::vec2>, std::vector<glm::vec3
 
 				for(int i = 0; i < tokens.size(); i++) {
 					std::string token = tokens[i];
-					sscanf_s(token.c_str(), "%d/%d/%d", &vind[i], &uvind[i], &nind[i], 32);
+					sscanf(token.c_str(), "%d/%d/%d", &vind[i], &uvind[i], &nind[i], 32);
 				}
 
 				//triangulate polygons to work with ray-tracing algorithm
@@ -118,8 +122,8 @@ std::tuple<std::vector<glm::vec3>, std::vector<glm::vec2>, std::vector<glm::vec3
 				free(uvind);
 				free(nind);
 			}
-			if(ln % 50000 == 0) {
-				std::cout << "Line " << ln << " parsed." << std::endl;
+			if(ln % 5000 == 0) {
+				std::cout << ln << " vertices parsed\n";
 			}
 			ln++;
 		}
