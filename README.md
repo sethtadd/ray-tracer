@@ -1,4 +1,4 @@
-# ray-tracer
+# Ray Tracer
 Ray tracer using OpenGL's Compute Shader
 
 Rendered scenes are static images (not real-time)
