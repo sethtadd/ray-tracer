@@ -9,3 +9,5 @@ Rendered scenes are static images (not real-time)
 - These rays are tested for intersection with the object in the scene (represented by the vertex data)
 - Rays can be set to bounce 0 to 3 times (this creates levels of reflections)
 - Compute shader sends data back to CPU process which saves the data to an image
+
+Credit: Seth implemented most of the GPU related code and made the shaders, Nick implemented .obj file loading and CPU rendering.
